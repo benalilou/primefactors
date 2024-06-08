@@ -4,17 +4,19 @@
 import time
 import sys
 
+# Calculate the unique prime factors of a given number.
 def get_prime_numbers(n, prime_db_data):
     primfactors = {}
     
-    # check for existing records
+    # Check if the number is already in the database
     if(n in prime_db_data.keys()):
          prime_keys = prime_db_data[n]
          prime_keys_list = prime_keys.split(",")
          for n in prime_keys_list:
            print('Prime factor found:', n) 
          return prime_keys_list
-          
+        
+    # Calculate prime factors using trial division      
     d = 2
     while d*d <= n:
         while (n % d) == 0:
@@ -29,7 +31,7 @@ def get_prime_numbers(n, prime_db_data):
          print('Prime factor found:', n) 
     return list(primfactors.keys())
 
-# write results to file names prime_number.dat
+# Write the prime factors and the time taken to find them to a file.
 def writeFile(number, prime_numbers, elapsed_time):
      file_name = 'prime_number.dat'
      prime_numbers_str = ','.join(map(str, prime_numbers)) 
@@ -42,7 +44,7 @@ def writeFile(number, prime_numbers, elapsed_time):
      except OSError:
         print('Error writing file')
 
-# read and store to dictionary
+# Read the prime factors database from a file into a dictionary.
 def read_prime_db(): 
     file_name = 'primes.db'
     data = {}
@@ -58,13 +60,15 @@ def read_prime_db():
     except Exception as e:
         return {}
 
-# update prime number file database       
+# Update the prime factors database with new prime factors.    
 def update_prime_db(number,prime_numbers): 
     file_name = 'primes.db'
     prime_numbers_str = ','.join(map(str, prime_numbers)) 
     file=open(file_name, 'a')
     file.write(str(number) + ":" + prime_numbers_str +'\n')
     file.close() 
+
+# Get a valid integer input from the user.
 def getInput(userInput):
     try:
        value = int(input(userInput))
@@ -72,7 +76,8 @@ def getInput(userInput):
     except ValueError:
        print("Invalid input, please enter an integer")
        sys.exit(0)
-             
+
+# Main function.
 def mainprogram():
      prime_db_data = read_prime_db() # read db into memory
      number = getInput('Give me the number:')
@@ -84,6 +89,5 @@ def mainprogram():
      writeFile(number,prime_keys,elapsed_time)
      if(str(number) not in prime_db_data.keys()):
          update_prime_db(number,prime_keys)
-
 
 mainprogram()
